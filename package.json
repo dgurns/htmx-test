@@ -9,6 +9,6 @@
   "private": true,
   "scripts": {
     "dev": "wrangler dev --local",
-    "deploy": "wrangler publish"
+    "publish": "wrangler publish"
   }
 }
