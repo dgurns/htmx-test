@@ -1,4 +1,4 @@
-import index from './routes/index';
+import index from './routes/index.html';
 import clicked from './routes/clicked';
 import updateTitle from './routes/update-title';
 
@@ -9,11 +9,13 @@ export interface Env {
 
 type Route = [
 	pathname: string,
-	handler: (
-		request: Request,
-		env: Env,
-		ctx: ExecutionContext
-	) => Promise<string | null> | string | null
+	handler:
+		| string
+		| ((
+				request: Request,
+				env: Env,
+				ctx: ExecutionContext
+		  ) => Promise<string | null> | string | null)
 ];
 
 export default {
@@ -29,7 +31,11 @@ export default {
 		];
 		for (const route of routes) {
 			if (new URLPattern({ pathname: route[0] }).test(request.url)) {
-				return new Response(await route[1](request, env, ctx), {
+				const res =
+					typeof route[1] === 'string'
+						? route[1]
+						: await route[1](request, env, ctx);
+				return new Response(res, {
 					headers: { 'content-type': 'text/html' },
 				});
 			}
